@@ -27,7 +27,7 @@ public class HomeController {
             users.remove(user);
             return "200";
         }else{
-            return "user " + user + " not in record";
+            return "the user " + user + " not in record";
         }
     }
     @PutMapping("/{id}")
