@@ -3,12 +3,27 @@ package org.denzhe.tea;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 @RestController
 @RequestMapping("/api")
 public class HomeController {
-    ArrayList<String> users = new ArrayList<>();
+    ArrayList<String> users;
+
+    {
+
+        try {
+            new EstablishDb();
+            users = new dbcon().getUsers();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @GetMapping("/users")
     public String index(){
         return "{users: "+users.toString()+"}";
@@ -19,6 +34,11 @@ public class HomeController {
             return "Error";
         }
         users.add(user);
+        try {
+            new UpdateDb().addUsers(user);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         return "200";
     }
     @DeleteMapping("users")
